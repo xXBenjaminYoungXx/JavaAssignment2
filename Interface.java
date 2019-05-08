@@ -32,5 +32,7 @@ public class Interface {
 		for(int count = 0; count < DepotArr.length; count++) {
 			DepotArr[count] = new Depot();
 		}
+		
+		
 	}
 }
