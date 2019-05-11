@@ -195,7 +195,7 @@ public class Interface {
 		while (exit) {
 			
 			//User input
-			Name = JOptionPane.showInputDialog(null, "Enter name of depot to remove.\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
+			Name = JOptionPane.showInputDialog(null, "Enter name of depot to remove.\nExisting depots:\n"+printDepotList(0)+printDepotList(1)+printDepotList(2)+printDepotList(3));
 			
 			val = isValid(Name);
 			
@@ -281,7 +281,7 @@ public class Interface {
 			
 			//User input Depot name
 			//User Input product Name
-			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add the product to:\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
+			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add the product to:\nExisting depots:\n"+printDepotList(0)+printDepotList(1)+printDepotList(2)+printDepotList(3));
 			
 			val = isValid(Name1);
 			
@@ -344,7 +344,7 @@ public class Interface {
 			}
 			
 			//Request user input, depot
-			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot:\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
+			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot:\nExisting depots:\n"+printDepotList(0)+printDepotList(1)+printDepotList(2)+printDepotList(3));
 			
 			val = isValid(Name1);
 			
@@ -372,7 +372,7 @@ public class Interface {
 			}
 			
 			//request user input product
-			Name2 = JOptionPane.showInputDialog(null, "Enter name of product you wish to delete:\nExisting products:\n- "+DepotArr[refD].readNameP(0)+"\n- "+DepotArr[refD].readNameP(1)+"\n- "+DepotArr[refD].readNameP(2)+"\n- "+DepotArr[refD].readNameP(3)+"\n- "+DepotArr[refD].readNameP(4)+"\n- ");
+			Name2 = JOptionPane.showInputDialog(null, "Enter name of product you wish to delete:\nExisting products:\n"+printProductList(refD, 0)+printProductList(refD, 1)+printProductList(refD, 2)+printProductList(refD, 3)+printProductList(refD, 4));
 			
 			val = isValid(Name2);
 			
@@ -438,33 +438,203 @@ public class Interface {
 //------------------------------------------------------------------
 
 	public void listDepot() {
+		int depot1P = DepotArr[0].productCount();
+		int depot2P = DepotArr[1].productCount();
+		int depot3P = DepotArr[2].productCount();
+		int depot4P = DepotArr[3].productCount();
 		
+		if(freeDepotCount() == 4) {
+			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		JOptionPane.showMessageDialog(null, "Existing Depots:\n"+depotListText(0, depot1P)+depotListText(1, depot2P)+depotListText(2, depot3P)+depotListText(3, depot4P), "Depot List", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public String depotListText(int refD, int Pnum) {
+		if(DepotArr[refD].readName().equals("")) {
+			return "";
+		}
+		
+		return "- "+ DepotArr[refD].readName() + " has "+Pnum+" products.\n";
 	}
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 
 	public void listProduct() {
-		for(int count = 0; count < 4; count++) {
-			System.out.println(DepotArr[count].readName()+": ");
-			for(int count2 = 0; count2 < 5; count2++) {
-				System.out.println("Product: "+DepotArr[count].readNameP(count2)+" Q: "+DepotArr[count].readQuantP(count2)+" W: "+DepotArr[count].readWeightP(count2)+" P: "+DepotArr[count].readPriceP(count2));
+		
+		String Name;
+		int val;
+		boolean exit = true;
+		
+		while(exit) {
+			//look if depots exist
+			if(freeDepotCount() == 4) {
+				JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
+				return;
 			}
+			
+			//User input
+			Name = JOptionPane.showInputDialog(null, "Enter name of depot you want to look at.\nExisting depots:\n"+printDepotList(0)+printDepotList(1)+printDepotList(2)+printDepotList(3));
+			
+			val = isValid(Name);
+			
+			//null cheack
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name = Name.toLowerCase();
+			
+			//look for depot
+			val = findDepot(Name);
+			
+			if(val == -1) {
+				continue;
+			}
+			
+			JOptionPane.showMessageDialog(null, "Depot " + DepotArr[val].readName()+" contains the following products:\n"+printProductInfo(val, 0)+printProductInfo(val, 1)+printProductInfo(val, 2)+printProductInfo(val, 3)+printProductInfo(val, 4), "Product List", JOptionPane.INFORMATION_MESSAGE);
+			
+			return;
 		}
+	}
+	
+	public String printProductInfo(int refD, int refP) {
+		if(DepotArr[refD].readNameP(refP).equals("")) {
+			return "";
+		}
+		
+		return "- Product "+ DepotArr[refD].readNameP(refP) +" has price $"+DepotArr[refD].readPriceP(refP)+ " weight "+DepotArr[refD].readWeightP(refP)+"kg, and quantity "+DepotArr[refD].readQuantP(refP)+"\n";
 	}
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 
 	public void lookForProduct() {
+		//Variables
+		boolean[][] list = new boolean[4][5];
 		
+		for(int count1 = 0; count1 < 4; count1++) {
+			for(int count2 = 0; count2 < 5; count2++) {
+				list[count1][count2] = false;
+			}
+		}
+		String Name;
+		boolean exit = true;
+		int val;
+		int refD;
+		int refP;
+		
+		if(freeDepotCount() == 4) {
+			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		if(DepotArr[0].productCount() == 5 && DepotArr[1].productCount() == 5 && DepotArr[2].productCount() == 5 && DepotArr[3].productCount() == 5) {
+			JOptionPane.showMessageDialog(null, "No products exist.", "List Depot", JOptionPane.INFORMATION_MESSAGE);
+		}
+		while(exit) {
+			
+			Name = JOptionPane.showInputDialog(null, "Enter name of product: ");
+			
+			val = isValid(Name);
+			
+			//null cheack
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name = Name.toLowerCase();
+			
+			for(refD = 0; refD < 4; refD++) {
+				for(refP = 0; refP < 5; refP++) {
+					if(DepotArr[refD].readNameP(refP).equals(Name)) {
+						list[refD][refP] = true;
+					}
+				}
+			}
+			
+			if(productSearchRes(list).equals("")) {
+				continue;
+			}
+			JOptionPane.showMessageDialog(null, productSearchRes(list), "Product Search results", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
 	}
 	
+	public String productSearchRes(boolean [][] list) {
+		String Final = "";
+		
+		for(int refD = 0; refD < 4; refD++) {
+			for(int refP = 0; refP < 5; refP++) {
+				if(list[refD][refP] == true) {
+					Final = Final.concat("Product "+DepotArr[refD].readNameP(refP)+" exists in depot "+DepotArr[refD].readName()+" with quantity "+DepotArr[refD].readQuantP(refP)+"\n");
+				}
+			}
+		}
+		
+		if(Final.equals("")) {
+			JOptionPane.showMessageDialog(null, "Product does not exist in any depot");
+			return Final;
+		}
+		return Final;
+	}
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 
 	public void valueOfDepot() {
+		String Name;
+		boolean exit = true;
+		int val;
+		int refD;
 		
+		if(freeDepotCount() == 4) {
+			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		while(exit) {
+			
+			Name = JOptionPane.showInputDialog(null, "Enter name of depot: \nExisting depots:\n"+printDepotList(0)+printDepotList(1)+printDepotList(2)+printDepotList(3));
+			
+			val = isValid(Name);
+			
+			//null cheack
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name = Name.toLowerCase();
+			
+			refD = findDepot(Name);
+			
+			if(refD == -1) {
+				continue;
+			}
+			
+			JOptionPane.showMessageDialog(null, "Depot "+DepotArr[refD].readName()+" has a culmative product value of: $"+sumOfDepotVal(refD), "Depot Value", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+	}
+	
+	public double sumOfDepotVal(int refD) {
+		return DepotArr[refD].readPriceP(0) * DepotArr[refD].readQuantP(0) + DepotArr[refD].readPriceP(1) * DepotArr[refD].readQuantP(1) + DepotArr[refD].readPriceP(2) * DepotArr[refD].readQuantP(2) + DepotArr[refD].readPriceP(3) * DepotArr[refD].readQuantP(3) + DepotArr[refD].readPriceP(4) * DepotArr[refD].readQuantP(4);
 	}
 	
 //------------------------------------------------------------------
@@ -747,4 +917,21 @@ public class Interface {
 		}
 	}
 
+//------------------------------------------------------------------
+//------------------------------------------------------------------
+	public String printDepotList(int refD) {
+		if(DepotArr[refD].readName().equals("")) {
+			return "";
+		}
+		
+		return "- "+ DepotArr[refD].readName() +"\n";
+	}
+	
+	public String printProductList(int refD, int refP) {
+		if(DepotArr[refD].readNameP(refP).equals("")) {
+			return "";
+		}
+		
+		return "- "+ DepotArr[refD].readNameP(refP) +"\n";
+	}
 }
