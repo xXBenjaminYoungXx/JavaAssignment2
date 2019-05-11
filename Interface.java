@@ -269,9 +269,13 @@ public class Interface {
 			for(int count = 0; count < 4; count++) {
 				
 				if(DepotArr[count].findProduct(Name) != -1) {
+					
 					//Notify if it exists
 					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[count].readName()+".");
-					ref = DepotArr[count].findProduct(Name);
+					
+					ref = DepotArr[count].findProduct(Name);//Keep product reference of last product
+					
+					//keep depot reference
 					depotReference = count;
 				}
 			}
@@ -322,7 +326,108 @@ public class Interface {
 //------------------------------------------------------------------
 
 	public void removeProduct() {
+		//Declare variables
+		String Name1;
+		String Name2;
+		String Quant;
+		boolean exit = true;
+		int refP;
+		int refD;
+		int val;
+		int quant;
 		
+		while(exit) {
+			
+			//Look look for existing depot
+			if(freeDepotCount() == 4) {
+				JOptionPane.showMessageDialog(null, "No depots exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+			
+			//Request user input, depot
+			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot:\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
+			
+			val = isValid(Name1);
+			
+			//null check
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name1 = Name1.toLowerCase();
+	
+			refD = findDepot(Name1);
+			
+			if(refD == -1) {
+				continue;
+			}
+			
+			if(DepotArr[refD].productCount() == 0) {
+				JOptionPane.showMessageDialog(null, "No products exist in "+DepotArr[refD].readName());
+				continue;
+			}
+			
+			//request user input product
+			Name2 = JOptionPane.showInputDialog(null, "Enter name of product you wish to delete:\nExisting products:\n- "+DepotArr[refD].readNameP(0)+"\n- "+DepotArr[refD].readNameP(1)+"\n- "+DepotArr[refD].readNameP(2)+"\n- "+DepotArr[refD].readNameP(3)+"\n- "+DepotArr[refD].readNameP(4)+"\n- ");
+			
+			val = isValid(Name2);
+			
+			//null check
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name2 = Name2.toLowerCase();
+			
+			refP = DepotArr[refD].findProduct(Name2);
+			//Look for product existence
+			if(refP == -1) {
+				JOptionPane.showMessageDialog(null, "Product does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
+			
+			//Request value to delete product
+			Quant = JOptionPane.showInputDialog(null, "Enter quantity of product you wish to remove:\nCurrent quantity: "+DepotArr[refD].readQuantP(refP));
+			
+			val = isValid(Quant);
+			
+			//null check
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Quant = Quant.replace(" ", "");
+			
+			quant = Integer.parseInt(Quant);
+			
+			if(quant > DepotArr[refD].readQuantP(refP)) {
+				JOptionPane.showMessageDialog(null, "You ented a value greater than the number of the product present!\nPlease enter valid value!");
+				continue;
+			}
+			
+			if(quant <= 0) {
+				JOptionPane.showMessageDialog(null, "You ented a value equal to or less than 0!\nPlease enter valid value!");
+				continue;
+			}
+			
+			DepotArr[refD].writeQuantP(DepotArr[refD].readQuantP(refP) - quant, refP);
+			return;
+		}
 	}
 	
 //------------------------------------------------------------------
@@ -609,10 +714,12 @@ public class Interface {
 			
 			Name = DepotArr[DepotRef].readNameP(ProductRef);
 			
-			//Find which product to add to. see if it already exists
+			//Find which product to add to
+			
+			//see if it already exists
 			for(count = 0; count < 5; count++) {
+				
 				if(DepotArr[depotRef].readNameP(count).equals(DepotArr[DepotRef].readNameP(ProductRef))) { // It already exists in depot
-					
 					
 					DepotArr[depotRef].writeQuantP((DepotArr[depotRef].readQuantP(count)+quant), count);
 					
