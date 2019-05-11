@@ -12,8 +12,8 @@ package Assignment2;
 public class Depot {
 	
 	//Variable/Object Types of class Depot
-	private static Product[] ProductArr;
-	private static String Name;
+	private Product[] ProductArr;
+	private String Name;
 	
 	public Depot() {
 		
@@ -26,6 +26,14 @@ public class Depot {
 		}
 	}
 	
+	public void close() {
+		
+		Name = "";
+		
+		for(int count = 0; count < ProductArr.length; count++) {
+			ProductArr[count].close();
+		}
+	}
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 	//Name getters/Setters
@@ -102,7 +110,7 @@ public class Depot {
 	 * @return Nothing
 	 * 
 	 */
-	public void writePriceP(int price, int reference) {
+	public void writePriceP(double price, int reference) {
 		ProductArr[reference].writePrice(price);
 		return;
 	}
@@ -124,7 +132,7 @@ public class Depot {
 	 * @return Nothing
 	 * 
 	 */
-	public void writeWeightP(int weight, int reference) {
+	public void writeWeightP(double weight, int reference) {
 		ProductArr[reference].writeWeight(weight);
 		return;
 	}
@@ -136,5 +144,62 @@ public class Depot {
 	 */
 	public double readWeightP(int reference) {
 		return ProductArr[reference].readWeight();
+	}
+	
+//------------------------------------------------------------------
+//***************PRODUCT GETTERS AND SETTERS************************
+//------------------------------------------------------------------
+	/**
+	 * @param Name of a product
+	 * @returns Int on product reference, -1 if doesn't exist
+	 * 
+	 */
+
+	public int findProduct(String Name) {
+		
+		for(int count = 0; count < 5; count++) {
+			if(ProductArr[count].readName().equals(Name)) {
+				return count;
+			}
+		}
+		
+		return -1;
+	}
+	
+//------------------------------------------------------------------
+//------------------------------------------------------------------
+	//Product Weight getters and setters
+		
+	/**
+	 * @param 
+	 * @return 
+	 * 
+	 */
+	public int productCount() {
+		int val = 0;
+		for(int count = 0; count < 5; count ++) {
+			if(!(ProductArr[count].readName().equals(""))) {
+				val++;
+			}
+		}
+		return val;
+	}
+
+//------------------------------------------------------------------
+//------------------------------------------------------------------
+	/**
+	 * @param 
+	 * @return, pointer to free product
+	 */
+	
+	public int findFreeProduct() {
+		
+		for(int count = 0; count < 5; count++) {
+			if(ProductArr[count].readName().equals("")) {
+				return count;
+			}
+		}
+		
+		return -1;
 	}
 }
