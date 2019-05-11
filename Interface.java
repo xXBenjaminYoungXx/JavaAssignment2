@@ -237,8 +237,8 @@ public class Interface {
 		boolean exit1 = true;
 		boolean exit2 = true;
 		int val;
-		int ref = -3;
-		int count;
+		int ref = -2;
+		int depotReference = -1;
 		
 		//See if depots exist
 		if(freeDepotCount() == 4) {
@@ -266,57 +266,54 @@ public class Interface {
 			Name = Name.toLowerCase();
 
 			//Look for existing product
-			for(count = 0; count < 4; count++) {
-				ref = DepotArr[count].findProduct(Name);
-				if(ref != -1) {
+			for(int count = 0; count < 4; count++) {
+				
+				if(DepotArr[count].findProduct(Name) != -1) {
+					//Notify if it exists
 					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[count].readName()+".");
-					break;
-				}
-				else {
-					ref = -2;
+					ref = DepotArr[count].findProduct(Name);
+					depotReference = count;
 				}
 			}
 			
-			while(exit2) {
-				//User input Depot name
-				//User Input product Name
-				Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add the product to:\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
-				
-				val = isValid(Name1);
-				
-				//null check
-				if(val == 0) {
-					return;
-				}
-				
-				//verify
-				if (val == 1) {
-					continue;
-				}
-				
-				Name1 = Name1.toLowerCase();
+			//User input Depot name
+			//User Input product Name
+			Name1 = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add the product to:\nExisting depots:\n- "+DepotArr[0].readName()+"\n- "+DepotArr[1].readName()+"\n- "+DepotArr[2].readName()+"\n- "+DepotArr[3].readName());
+			
+			val = isValid(Name1);
+			
+			//null check
+			if(val == 0) {
+				return;
+			}
+			
+			//verify
+			if (val == 1) {
+				continue;
+			}
+			
+			Name1 = Name1.toLowerCase();
 
-				//look for depot
-				val = findDepot(Name1);
-				
-				if(val == -1) {
+			//look for depot
+			val = findDepot(Name1);
+			
+			if(val == -1) {
+				continue;
+			}
+			
+			if(ref == -2) {// New product
+				//Check if 5 products exist in depot
+				if(DepotArr[val].productCount()==5) {
+					JOptionPane.showMessageDialog(null, "Depot "+DepotArr[val].readName()+" Is full. You can:\nRemove a product from this depot\nAdd to an existing product in this depot.");
 					continue;
 				}
 				
-				if(ref == -2) {// New product
-					//Check if 5 products exist in depot
-					if(DepotArr[val].productCount()==5) {
-						JOptionPane.showMessageDialog(null, "Depot "+DepotArr[val].readName()+" Is full. You can:\nRemove a product from this depot\nAdd to an existing product in this depot.");
-						continue;
-					}
-					
-					InputNewProduct(Name, val);
-				}
+				InputNewProduct(Name, val);
+			}
+			
+			else {//existing product in ref depot count
 				
-				else {//existing product in ref depot count
-					
-					InputExistingProduct(Name, val);
-				}
+				InputExistingProduct(ref, findDepot(DepotArr[depotReference].readName()), val);
 			}
 		}	
 	}
@@ -339,7 +336,12 @@ public class Interface {
 //------------------------------------------------------------------
 
 	public void listProduct() {
-		
+		for(int count = 0; count < 4; count++) {
+			System.out.println(DepotArr[count].readName()+": ");
+			for(int count2 = 0; count2 < 5; count2++) {
+				System.out.println("Product: "+DepotArr[count].readNameP(count2)+" Q: "+DepotArr[count].readQuantP(count2)+" W: "+DepotArr[count].readWeightP(count2)+" P: "+DepotArr[count].readPriceP(count2));
+			}
+		}
 	}
 	
 //------------------------------------------------------------------
@@ -524,7 +526,7 @@ public class Interface {
 				continue;
 			}
 			
-			Input = JOptionPane.showInputDialog(null, "Enter Weight of product:");
+			Input = JOptionPane.showInputDialog(null, "Enter price of product:");
 			
 			val = isValid(Input);
 			
@@ -569,12 +571,16 @@ public class Interface {
 	 * @param, String Name, product, depot ref, product ref
 	 * @returns Nothing
 	 */
-	public void InputExistingProduct(String ProductName, int depotRef) {
+	public void InputExistingProduct(int ProductRef/*product ref*/, int DepotRef/*from depot it is from*/, int depotRef/*To add to*/) {
 		
 		String Input;
+		String Name;
 		boolean exit = true;
 		int val;
 		int quant;
+		int count;
+		double price;
+		double weight;
 		
 		while(exit) {
 			
@@ -596,10 +602,35 @@ public class Interface {
 			
 			quant = Integer.parseInt(Input);
 			
-			//To find what product
-			val = DepotArr[depotRef].findProduct(ProductName);
+			//get data from first depot
+			price = DepotArr[DepotRef].readPriceP(ProductRef);
 			
-			DepotArr[depotRef].writeQuantP((DepotArr[depotRef].readQuantP(val)+quant), val );
+			weight = DepotArr[DepotRef].readWeightP(ProductRef);
+			
+			Name = DepotArr[DepotRef].readNameP(ProductRef);
+			
+			//Find which product to add to. see if it already exists
+			for(count = 0; count < 5; count++) {
+				if(DepotArr[depotRef].readNameP(count).equals(DepotArr[DepotRef].readNameP(ProductRef))) { // It already exists in depot
+					
+					
+					DepotArr[depotRef].writeQuantP((DepotArr[depotRef].readQuantP(count)+quant), count);
+					
+					DepotArr[depotRef].writePriceP(price, count);
+					
+					DepotArr[depotRef].writeWeightP(weight, count);
+					
+					return;
+				}
+			}
+			
+			//otherwise we need to find new product spot
+			count = DepotArr[depotRef].findFreeProduct();
+			
+			DepotArr[depotRef].writeNameP(Name, count);
+			DepotArr[depotRef].writeQuantP(quant, count);
+			DepotArr[depotRef].writePriceP(price, count);
+			DepotArr[depotRef].writeWeightP(weight, count);
 			
 			return;
 		}
