@@ -85,12 +85,16 @@ public class Depot {
 	
 	/**
 	 * @param int product quant, int reference, to identify which product
-	 * @return Nothing
+	 * @return 2 if product deleted, 1 if otherwise
 	 * 
 	 */
-	public void writeQuantP(int quant, int reference) {
-		ProductArr[reference].writeQuant(quant);
-		return;
+	public int writeQuantP(int quant, int reference) {
+		int result;
+		result = ProductArr[reference].writeQuant(quant);
+		if(result == 2) {
+			return 2;
+		}
+		return 1;
 	}
 	
 	/**

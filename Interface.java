@@ -235,7 +235,6 @@ public class Interface {
 		String Name;
 		String Name1;
 		boolean exit1 = true;
-		boolean exit2 = true;
 		int val;
 		int ref = -2;
 		int depotReference = -1;
@@ -270,10 +269,10 @@ public class Interface {
 				
 				if(DepotArr[count].findProduct(Name) != -1) {
 					
-					//Notify if it exists
-					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[count].readName()+".");
-					
 					ref = DepotArr[count].findProduct(Name);//Keep product reference of last product
+					
+					//Notify if it exists
+					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[count].readName()+" with value of $"+DepotArr[count].readPriceP(ref)+" and weight of "+DepotArr[count].readWeightP(ref)+"Kg.\nData has been coppied, only quantity is needed");
 					
 					//keep depot reference
 					depotReference = count;
@@ -425,7 +424,12 @@ public class Interface {
 				continue;
 			}
 			
-			DepotArr[refD].writeQuantP(DepotArr[refD].readQuantP(refP) - quant, refP);
+			val = DepotArr[refD].writeQuantP(DepotArr[refD].readQuantP(refP) - quant, refP);
+			
+			if(val == 2) {
+				JOptionPane.showMessageDialog(null, "Product has been removed from "+ DepotArr[refD].readName());
+			}
+			
 			return;
 		}
 	}
