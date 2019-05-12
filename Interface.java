@@ -178,7 +178,11 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * @param Nothing
+	 * @return Nothing
+	 * 
+	 */
 	public void removeDepot() {
 		//Declare variables
 		String Name;
@@ -236,7 +240,7 @@ public class Interface {
 		String Name1;
 		boolean exit1 = true;
 		int val;
-		int ref = -2;
+		int refP = -2;
 		int depotReference = -1;
 		
 		//See if depots exist
@@ -265,17 +269,17 @@ public class Interface {
 			Name = Name.toLowerCase();
 
 			//Look for existing product
-			for(int count = 0; count < 4; count++) {
+			for(int refD = 0; refD < 4; refD++) {
 				
-				if(DepotArr[count].findProduct(Name) != -1) {
+				if(DepotArr[refD].findProduct(Name) != -1) {
 					
-					ref = DepotArr[count].findProduct(Name);//Keep product reference of last product
+					refP = DepotArr[refD].findProduct(Name);//Keep product reference of last product
 					
 					//Notify if it exists
-					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[count].readName()+" with value of $"+DepotArr[count].readPriceP(ref)+" and weight of "+DepotArr[count].readWeightP(ref)+"Kg.\nData has been coppied, only quantity is needed");
+					JOptionPane.showMessageDialog(null, "Product "+Name+" Exists in "+DepotArr[refD].readName()+" with value of $"+DepotArr[refD].readPriceP(refP)+" and weight of "+DepotArr[refD].readWeightP(refP)+"Kg.\nData has been coppied, only quantity is needed");
 					
 					//keep depot reference
-					depotReference = count;
+					depotReference = refD;
 				}
 			}
 			
@@ -304,7 +308,7 @@ public class Interface {
 				continue;
 			}
 			
-			if(ref == -2) {// New product
+			if(refP == -2) {// New product
 				//Check if 5 products exist in depot
 				if(DepotArr[val].productCount()==5) {
 					JOptionPane.showMessageDialog(null, "Depot "+DepotArr[val].readName()+" Is full. You can:\nRemove a product from this depot\nAdd to an existing product in this depot.");
@@ -316,7 +320,7 @@ public class Interface {
 			
 			else {//existing product in ref depot count
 				
-				InputExistingProduct(ref, findDepot(DepotArr[depotReference].readName()), val);
+				InputExistingProduct(refP, findDepot(DepotArr[depotReference].readName()), val);
 			}
 		}	
 	}
@@ -525,20 +529,24 @@ public class Interface {
 				list[count1][count2] = false;
 			}
 		}
+		
 		String Name;
 		boolean exit = true;
 		int val;
 		int refD;
 		int refP;
 		
+		//See if a depot exists
 		if(freeDepotCount() == 4) {
 			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		
+		//See if product exists
 		if(DepotArr[0].productCount() == 5 && DepotArr[1].productCount() == 5 && DepotArr[2].productCount() == 5 && DepotArr[3].productCount() == 5) {
 			JOptionPane.showMessageDialog(null, "No products exist.", "List Depot", JOptionPane.INFORMATION_MESSAGE);
 		}
+		
 		while(exit) {
 			
 			Name = JOptionPane.showInputDialog(null, "Enter name of product: ");
@@ -557,21 +565,29 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			//List all matched search results in boolean array
 			for(refD = 0; refD < 4; refD++) {
+				
 				for(refP = 0; refP < 5; refP++) {
+					
 					if(DepotArr[refD].readNameP(refP).equals(Name)) {
+						
 						list[refD][refP] = true;
 					}
 				}
 			}
 			
+			//Convert boolean array into respective string
 			if(productSearchRes(list).equals("")) {
 				continue;
 			}
-			JOptionPane.showMessageDialog(null, productSearchRes(list), "Product Search results", JOptionPane.INFORMATION_MESSAGE);
+			
+			JOptionPane.showMessageDialog(null, productSearchRes(list), "Product Search Results", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 	}
+	
+//------------------------------------------------------------------	
 	
 	public String productSearchRes(boolean [][] list) {
 		String Final = "";
@@ -746,8 +762,8 @@ public class Interface {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 	/**
-	 * @param, String Name, product, depot ref, product ref
-	 * @returns Nothing
+	 * @param, String Name, product, depot ref, product ref.
+	 * @returns Nothing.
 	 */
 	public void InputNewProduct(String Name, int depotRef) {
 		String Input;
@@ -850,7 +866,7 @@ public class Interface {
 	 * @param, String Name, product, depot ref, product ref
 	 * @returns Nothing
 	 */
-	public void InputExistingProduct(int ProductRef/*product ref*/, int DepotRef/*from depot it is from*/, int depotRef/*To add to*/) {
+	public void InputExistingProduct(int ProductRef/*product ref it is from*/, int DepotRef/*from depot it is from*/, int depotRef/*To add to*/) {
 		
 		String Input;
 		String Name;
@@ -919,6 +935,11 @@ public class Interface {
 
 //------------------------------------------------------------------
 //------------------------------------------------------------------
+	/**
+	 * 
+	 * @param refD, int reference value based on selected depot
+	 * @return String that either prints Product information if it exists, or returns "" if it doesn't
+	 */
 	public String printDepotList(int refD) {
 		if(DepotArr[refD].readName().equals("")) {
 			return "";

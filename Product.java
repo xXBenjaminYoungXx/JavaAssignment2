@@ -7,11 +7,13 @@ package Assignment2;
 */
 //-----------------------------------------------------------------------------------------
 public class Product {
+	//Object Variables
 	private String Name;
 	private int quantity;
 	private double price;
 	private double weight;
 	
+	//Constructor
 	public Product() {
 		Name = "";
 		quantity = 0;
@@ -20,6 +22,7 @@ public class Product {
 		return;
 	}
 	
+	//Closer
 	public void close() {
 		Name = "";
 		quantity = 0;

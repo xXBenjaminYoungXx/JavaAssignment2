@@ -15,6 +15,7 @@ public class Depot {
 	private Product[] ProductArr;
 	private String Name;
 	
+	//Constructor
 	public Depot() {
 		
 		ProductArr = new Product[5];
@@ -26,6 +27,7 @@ public class Depot {
 		}
 	}
 	
+	//Closer
 	public void close() {
 		
 		Name = "";
