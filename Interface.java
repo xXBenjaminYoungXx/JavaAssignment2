@@ -1,6 +1,10 @@
 package Assignment2;
 
 import javax.swing.JOptionPane;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.util.Scanner;
 
 //-----------------------------------------------------------------------------------------
 /*
@@ -10,6 +14,11 @@ import javax.swing.JOptionPane;
 * Requirements: 
 * 	javax.swing.JOptionPane
 *	Depot.java
+*	java.io.PrintWriter
+*	java.io.FileNotFoundException
+*Scope of file will remain within respective file io methods
+*TODO: Spaces in products / depots should be illegal
+*TODO: Import from file, yay fun
 */
 //-----------------------------------------------------------------------------------------
 
@@ -203,7 +212,7 @@ public class Interface {
 			
 			val = isValid(Name);
 			
-			//null cheack
+			//null check
 			if(val == 0) {
 				return;
 			}
@@ -250,6 +259,8 @@ public class Interface {
 		}
 		
 		while(exit1) {
+			
+			refP = -2;
 			
 			//User Input product Name
 			Name = JOptionPane.showInputDialog(null, "Enter name of product you wish to add:");
@@ -484,7 +495,7 @@ public class Interface {
 			
 			val = isValid(Name);
 			
-			//null cheack
+			//null check
 			if(val == 0) {
 				return;
 			}
@@ -543,8 +554,9 @@ public class Interface {
 		}
 		
 		//See if product exists
-		if(DepotArr[0].productCount() == 5 && DepotArr[1].productCount() == 5 && DepotArr[2].productCount() == 5 && DepotArr[3].productCount() == 5) {
+		if(DepotArr[0].productCount() == 0 && DepotArr[1].productCount() == 0 && DepotArr[2].productCount() == 0 && DepotArr[3].productCount() == 0) {
 			JOptionPane.showMessageDialog(null, "No products exist.", "List Depot", JOptionPane.INFORMATION_MESSAGE);
+			return;
 		}
 		
 		while(exit) {
@@ -553,7 +565,7 @@ public class Interface {
 			
 			val = isValid(Name);
 			
-			//null cheack
+			//null check
 			if(val == 0) {
 				return;
 			}
@@ -626,7 +638,7 @@ public class Interface {
 			
 			val = isValid(Name);
 			
-			//null cheack
+			//null check
 			if(val == 0) {
 				return;
 			}
@@ -657,16 +669,295 @@ public class Interface {
 //------------------------------------------------------------------
 
 	public void writeToFile() {
+		//variables/Objects
+		String FileName = "";
+		PrintWriter OutputStream;
+		int val = 0;
 		
+		FileName = JOptionPane.showInputDialog(null, "Enter name of file you wish to create & save data to.\nPlease include '.txt' extension.\nNOTICE: If inputted file name already exists, file data will be wiped!!\nYou have been warned!", "File Name", JOptionPane.WARNING_MESSAGE);
+		
+		val = isValid(FileName);
+		
+		//null check
+		if(val == 0) {
+			return;
+		}
+		
+		//verify
+		if (val == 1) {
+			return;
+		}
+		
+		//try/catch block for file initialization
+		try {
+			OutputStream = new PrintWriter(FileName);
+		} 
+		catch(FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "ERROR:\nFILE "+FileName+" INITIALISATION ERROR!\nError with file, present within 'writeToFile' method","ERROR",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		//Development of String object to print line by line
+		//Note: Apparently \n does not work hence it needs to be solved line by line
+		
+		for(int refD = 0; refD < 4; refD++) {
+			
+			//If depot does not exist, skip this process
+			if(DepotArr[refD].readName().equals("")) {
+				continue;
+			}
+			
+			//If depot exists it needs to be printed to file
+			for(int refP = 0; refP < 5; refP++) {
+				
+				if(DepotArr[refD].productCount() == 0) {//If no products exist in it it needs to be printed once
+					OutputStream.println(DepotArr[refD].readName()+"-Depot");
+					refP = 5;
+					continue;
+				}
+				
+				if(DepotArr[refD].readNameP(refP).equals("")) {//If product doen't exist here go back
+					continue;
+				}
+				
+				if(!DepotArr[refD].readName().equals("")) {
+					OutputStream.println(FinalFilePrint(refD,refP));//print depot and respective product info
+				}
+			}
+		}
+		
+		OutputStream.close();
+		
+		JOptionPane.showMessageDialog(null, "Data successfully saved to "+FileName, "Notice", JOptionPane.INFORMATION_MESSAGE);
 	}
+//------------------------------------------------------------------
+	/**
+	 * 
+	 * @param refD, Reference variable to depot object
+	 * @return String that needs to be printed to file
+	 */
+	public String FinalFilePrint(int refD, int refP) {
+		String FinalString = "";
+		
+		
+		FinalString = FinalString.concat(DepotArr[refD].readName()+"-Depot "+FileProductPrint(refD, refP));
+		
+		return FinalString;
+	}
+	
+	/**
+	 * 
+	 * @param refD, reference to depot array
+	 * @return String that contains respective depot product information
+	 */
+	public String FileProductPrint(int refD, int refP) {
+		String FinalString = "";
+			
+		if(!DepotArr[refD].readNameP(refP).equals("")) {
+			FinalString = FinalString.concat(DepotArr[refD].readNameP(refP)+" "+DepotArr[refD].readPriceP(refP)+" "+DepotArr[refD].readWeightP(refP)+" "+DepotArr[refD].readQuantP(refP));
+		}
+		
+		return FinalString;
+	}
+
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 
 	public void readfromFile() {
+		//Varianles/Objects
+		String FileName = "";
+		String Line;
+		Scanner InputStream;
 		
+		int val = 0;
+		
+		//Request file name
+		FileName = JOptionPane.showInputDialog(null, "Enter name of file you wish to load.\nPlease include '.txt' extension.", "File Name", JOptionPane.INFORMATION_MESSAGE);
+		
+		val = isValid(FileName);
+		
+		//null check
+		if(val == 0) {
+			return;
+		}
+		
+		//verify
+		if (val == 1) {
+			return;
+		}
+		
+		//try/catch block for fileStream initialization
+		try {
+			InputStream = new Scanner(new File(FileName));
+		} 
+		catch(FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "ERROR:\nFILE '"+FileName+"' INITIALIZATION ERROR!\nError present within 'readFromFile' method\nCause: Incorrect file name.","ERROR",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		if(!InputStream.hasNext()) {
+			JOptionPane.showMessageDialog(null, "ERROR:\nFILE "+FileName+" READING ERROR!\nError with file, present within 'readFromFile' method\nNo data Present","ERROR",JOptionPane.ERROR_MESSAGE);
+			InputStream.close();
+			return;
+		}
+		
+		//File is processed line by line
+		while(InputStream.hasNextLine()) {
+			//Get line to process
+			Line = InputStream.nextLine();
+			//put line in method processor
+			processLine(Line);
+		}
+		
+		InputStream.close();
 	}
-	
+//------------------------------------------------------------------
+	public void processLine(String Line) {
+		String DepotName = "";
+		String ProductName = "";
+		double price = -1;
+		double weight = -1;
+		int quant = 0;
+		int atRefP = -1;
+		int atRefD = -1;
+		int depotAt = -1;
+		
+		//Eliminating useless info
+		Line = Line.toLowerCase();
+		Line = Line.replace("-depot", "");
+		Line = Line.replace("  ", " ");//Replace any double spaces with single (Just in case)
+		
+		String [] words = Line.split(" ", 5);
+		
+		if(words.length < 2) {//If only depot name is present due to its lack of products
+			DepotName = words[0];
+		}
+		
+		else {//If depot and product both exist
+			try{
+				DepotName = words[0];
+				ProductName = words[1];
+				price = Double.parseDouble(words[2]);
+				weight = Double.parseDouble(words[3]);
+				quant = Integer.parseInt(words[4]);
+			}
+			catch(ArrayIndexOutOfBoundsException e) {
+				JOptionPane.showMessageDialog(null, e.toString(),"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, e.toString(),"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}	
+		}
+		
+		if(DepotName.replace(" ", "").equals("")) {
+			JOptionPane.showMessageDialog(null, "invalid depot name, skipping line","Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		//Now data is stored, we need to find out 'what to do'
+		//Firstly we need to see if 'DepotName' already exists
+		for(int refD = 0; refD < 4; refD++) {
+			
+			if(DepotArr[refD].readName().equals(DepotName)) {
+				depotAt = refD;
+			}
+		}
+		
+		//Secondly we need to see if product exists in any depot only if product is listed
+		if(words.length == 5) {
+			for(int refD = 0; refD < 4; refD++){
+				
+				for(int refP = 0; refP < 5; refP++) {
+					
+					if(DepotArr[refD].readNameP(refP).equals(ProductName)) {
+						atRefP = refP;
+						atRefD = refD;
+					}
+				}
+			}
+		}
+		
+		//If depot does not exist we need to make one
+		if(depotAt == -1) {
+			
+			//Find free depot spot
+			depotAt = avalableDepot();
+			
+			if(depotAt == -1) {
+				JOptionPane.showMessageDialog(null, "No Depot spots avaliable, skipping line ","Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			DepotArr[depotAt].writeName(DepotName);
+			
+			if(words.length < 2) {
+				return;
+			}
+		}
+		
+		//Now if depot and product is listed,Note: new depot is already written.
+		if(words.length == 5) {//ie product info listed
+			//if product exists
+			if(atRefP != -1) {
+				FileExistingProduct(atRefD,atRefP,depotAt,quant);
+				return;
+			}
+			//if product is new
+			FileNewProduct(depotAt, weight, price, quant, ProductName);
+		}
+	}
+//------------------------------------------------------------------
+	public void FileExistingProduct(int refD/*address of product*/, int refP/*address of product*/, int refd/*Depot we add to*/, int quant) {
+		String Name = DepotArr[refD].readNameP(refP);//existing product name
+		double price = DepotArr[refD].readPriceP(refP);
+		double weight = DepotArr[refD].readWeightP(refP);
+		int freeSpace = -1;
+		
+		//We need to see if product exists in current depot
+		for(int count = 0; count < 5; count++) {
+			if(DepotArr[refd].readNameP(count).equals(Name)) {
+				//We just need to add quant
+				DepotArr[refd].writeQuantP(DepotArr[refd].readQuantP(count) + quant, count);
+				return;
+			}
+		}
+		
+		//Otherwise we need to find free product space
+		freeSpace = DepotArr[refd].findFreeProduct();
+		
+		if(freeSpace == -1) {
+			JOptionPane.showMessageDialog(null, "Depot "+DepotArr[refd].readName()+" Has no free product spots, line will now be skiped.", "Notice", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		//Add data to product
+		DepotArr[refd].writeNameP(Name, freeSpace);
+		DepotArr[refd].writeQuantP(quant, freeSpace);
+		DepotArr[refd].writePriceP(price, freeSpace);
+		DepotArr[refd].writeWeightP(weight, freeSpace);
+		return;
+	}
+
+//------------------------------------------------------------------
+	public void FileNewProduct(int refd/*Depot we add to*/, double weight, double price, int quant, String Name) {
+		int freeSpot = -1;
+		//Find free product spot
+		freeSpot = DepotArr[refd].findFreeProduct();
+		
+		if(freeSpot == -1) {
+			JOptionPane.showMessageDialog(null, "Depot "+DepotArr[refd].readName()+" Has no free product spots, line will now be skiped.", "Notice", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		DepotArr[refd].writeNameP(Name, freeSpot);
+		DepotArr[refd].writeQuantP(quant, freeSpot);
+		DepotArr[refd].writePriceP(price, freeSpot);
+		DepotArr[refd].writeWeightP(weight, freeSpot);
+		return;
+	}
+
 //------------------------------------------------------------------
 //**********************Program Methods*****************************
 //------------------------------------------------------------------
