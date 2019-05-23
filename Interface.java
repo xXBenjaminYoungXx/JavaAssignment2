@@ -18,17 +18,84 @@ import java.util.Scanner;
 *	java.io.File
 *	java.util.Scanner
 *	Depot.java
-*	
-* 
-* 
 * ______________________________
 * |****************************|
 * |* Method Information Below!*|
 * |____________________________|
 * 
+* Information on @param and @return can be found at the respective method decoration.
+* 
+* FLOW CONTROLL/SUB-METHODS(Methods used specifically for other methods):
+* 		-Main: Creates Interface object 'GUI' and runs the Interface.
+* 		-Run(): Begins main flow control of program, calls menu method and responds to
+* 				its return accordingly.
+* 		-mainMenu(): Displays menu choices to user, and requests input of numbers (1-10) to execute respective
+* 				 menu choice
+* 
+* 		-addDepot(): Governs flow control for the addDepot command. Checks for available depot space
+* 					 then requests Name from user input and adds depot if it doen't already exist.
+* 
+* 		-removeDepot(): Governs flow control for the removeDepot command. Checks to see if depots already exist, the 
+* 						requests user input for depot name to delete. Prints existing depots onto GUI.
+* 
+* 		-addProduct(): Governs flow control for the addProduct command. Checks to see if other depots exist.
+* 					   requests user input for product name, scans to see if product exists, the requests name of depot to add product to.
+* 					   If depot is full, it will notify user with error.
+* 			-InputNewProduct(): Will request user input for weight, price, quantity values, and assign to new product object in depot.
+* 			-InputExistingProduct(): Will request user input for quantity value, and assign to depot, using values 
+* 									 from existing product
+* 
+* 		-removeProduct(): Governs flow control for the removeProduct command. Checks to see if other depots exist.
+* 					      Requests user input for depot name, existing depots are printed to GUI. Then lists products in depot, 
+* 						  requesting user input for product name. Then prints number of that product in that depot and requests
+* 						  value at which to take away from.
+* 
+* 		-listDepot(): prints to GUI, existing depots. Checks to see if other depots exist.
+* 			-depotListText(): Formats required depots to print as a simple string.
+* 
+* 		-listProduct(): Governs flow control for the listProduct command. Checks to see if other depots exist.
+* 						requests user input for depot name, then lists products within that depot.
+* 			-printProductInfo(): Generates string of product info
+* 
+* 		-lookForProduct(): Requests user input for product name. Then scans all products in all depots, and stores
+* 						   results on 2D boolean array. True if name matches. Prints up true results.
+* 			-productSearchRes(): Generates string of successful product search results. Notify's user if no successful
+* 								 results were found.
+* 
+* 		-valueOfDepot(): Requests user input for depot name. Calculates value of depot.
+* 			-sumOfDepotVal(): Calculates sum of a depots value
+* 
+* 		-writeToFile(): Requests user input for file name, notifies user that this will overwrite data in that file it 
+* 						it already exists. Notifies user if FileNotFoundException error is thrown.
+* 			-finalFilePrint(): generates connected Strings generated from finalProductPrint():
+* 			-finalProductPrint(): generates strings containing information of required product. Formatted for file data.
+* 
+* 		-readFromFile(): Requests user input for file name, notifies user if file not found, and will display an error if format is not correct 
+* 						 on a given line. Will skip corrupted line and continue reading.
+* 			-proccessLine(): Takes a line of characters in file, and begins processing data. Begins by removing useless material (-Depot),
+* 							 and segregates information on line into an array. It then determines information and decides the following:
+* 							 -line contains information on empty depot
+* 							 -line contains information of depot and new product
+* 							 -line contains information of depot and existing product
+* 							 -line has incorrect format and is regarded as corrupted data, must be skipped
+* 				-fileExistingProduct(): Takes data from product that already exists and assigns to product in requested depot
+* 										Accounts for the fact that the product may exist in current depot.
+* 				-fileNewProduct(); Takes data to begin the creation of a new product in requested depot.
+* 		
+* OTHER METHODS:
+* 		-isValid(): Takes string and checks to see if a usable input is provided.
+* 
+* 		-freeDepotCount(): returns int based on number of available depots
+* 
+* 		-avaliableDepot(): returns int of a free depot reference value, returns -1 if none exist
+* 
+* 		-doesDepotExist(): returns true if depot exists, false if otherwise
+* 
+* 		-findDepot(): returns int value of depot reference
+* 
+* 		-printDepotList(): returns string of depot information if they exist
 *TODO: Debug program
 *TODO: Add main method comments
-*TODO: Read over project to double check
 *TODO: Add functionality and fix grammar
 */
 //-----------------------------------------------------------------------------------------
@@ -50,7 +117,7 @@ public class Interface {
 	* Changing final variables will work for additional depots/products however, these additional products/depots wont be printed to GUI.
 	* I can accommodate for this by modifying String methods such as 'productSearchRes'.
 	* NOTE: Default should remain at MAX_D = 4
-	* 								 MAX_P = 5
+	* 								 MAX_P = 5 //as given in project description
 	*/
 	//------------------------------------//
 	public static void main(String[] args) {
@@ -116,7 +183,7 @@ public class Interface {
 				continue;
 			}
 			else if(menuChoice.equals("10")) {
-				readfromFile();
+				readFromFile();
 				continue;
 			}
 			else {
@@ -839,7 +906,7 @@ public class Interface {
 	/**
 	 * Flow control of readFromFile menu option
 	 */
-	public void readfromFile() {
+	public void readFromFile() {
 		//Variables/Objects
 		String FileName = "";
 		String Line;
@@ -1385,6 +1452,6 @@ public class Interface {
  * |  _        _  |
  * | |_|	  |	| |
  * |__________|_|_|
- * 
- * 
+ * You found the house!
+ * It only seems to be a house in eclipse...
 */

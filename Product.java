@@ -4,6 +4,20 @@ package Assignment2;
 * Authors: Benjamin Young and Ryan McCormack
 * Student ID's: c3330653 c3329771
 * Email: BenjaminYoung7198@gmail.com  ryanmack@bigpond.com
+* 
+* METHOD DEFINITION:
+* 		Constructors/Close()
+* 			-Product(): Initializes all variables, such that none are null
+* 			-Close(): Does what constructor does
+* 		Getters and Setters
+* 			-writeName(): Changes name according to String @param
+* 			-readName(): returns Name string
+* 			-writeQuantity(): Changes Quantity according to int @param
+* 			-readQuantity(): returns int quantity
+* 			-writePrice(): Changes Price according to double @param
+* 			-readPrice(): returns double price
+* 			-writeWeight: Changes weight according to double @param
+* 			-readWeight():returns double weight
 */
 //-----------------------------------------------------------------------------------------
 public class Product {

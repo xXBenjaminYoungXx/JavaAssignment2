@@ -6,6 +6,30 @@ package Assignment2;
 * Email: BenjaminYoung7198@gmail.com  ryanmack@bigpond.com
 * Requirements: 
 *	Product.java
+*
+* METHOD LIST:
+* 	Constructors/Close():
+* 		-Depot(): Creates product array and initializes each one. Then sets Name to ""
+* 		-close(): Sets Name to "" and closes Products
+* 		
+* 	Getters & Setters:
+* 		NAME:
+* 			-writeName(): Changes String variable to string @param
+* 			-readName(): Returns String variable Name
+* 		Product Data:
+* 			-writeNameP(): Takes String and product reference @param
+* 			-readnameP(): Takes @param product reference, and returns name.
+* 			-writeQuantP(): Takes @param int quant and int reference to change product quant.
+* 							If quant drops below 1, will return 2 if product needs to be closed
+* 			-readQuanrP(): Takes int reference and returns product quant value
+* 			-writePriceP(): Takes @param int reference and double price to change price variable
+* 			-readPriceP(): returns price variable
+* 			-writeWeightP(): takes @param int reference and double weight to change weight
+* 			-readWeightP(): Takes @param refrence and returns the double value
+* 	Other:
+* 		-findProduct(): returns reference value of product that has name given in @param
+* 		-productCount(): returns number of existing products
+* 		-findFreeProduct(): returns reference value of free product, returns -1 if no free products.
 */
 //-----------------------------------------------------------------------------------------
 
