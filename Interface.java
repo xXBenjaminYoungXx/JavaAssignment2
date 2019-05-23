@@ -18,7 +18,7 @@ import java.util.Scanner;
 *	java.io.FileNotFoundException
 *Scope of file will remain within respective file io methods
 *TODO: Spaces in products / depots should be illegal
-*TODO: Import from file, yay fun
+*TODO: Import from file, yay fun,(Update): Debugg
 */
 //-----------------------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ public class Interface {
 		}
 		
 		while(exit) {
-			Name = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add:");
+			Name = JOptionPane.showInputDialog(null, "Enter name of Depot you wish to add:\nNote: \n-All characters will become lowercase.\n-Spaces will be replaced with '_'.");
 			
 			val = isValid(Name);//is it valid
 			
@@ -173,6 +173,9 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			Name = Name.replace(" ", "_");
+			
+			if(Name.contains(" "))
 			//See if exists
 			if(doesDepotExist(Name)) {
 				JOptionPane.showMessageDialog(null, "That depot already exists!", "Notice", JOptionPane.INFORMATION_MESSAGE);
@@ -224,6 +227,8 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			Name = Name.replace(" ", "_");
+			
 			//look for depot
 			val = findDepot(Name);
 			
@@ -263,7 +268,7 @@ public class Interface {
 			refP = -2;
 			
 			//User Input product Name
-			Name = JOptionPane.showInputDialog(null, "Enter name of product you wish to add:");
+			Name = JOptionPane.showInputDialog(null, "Enter name of product you wish to add:\nNote: \n-All characters will become lowercase.\n-Spaces will be replaced with '_'.");
 			
 			val = isValid(Name);
 			
@@ -278,6 +283,8 @@ public class Interface {
 			}
 			
 			Name = Name.toLowerCase();
+			
+			Name = Name.replace(" ", "_");
 
 			//Look for existing product
 			for(int refD = 0; refD < 4; refD++) {
@@ -311,6 +318,8 @@ public class Interface {
 			}
 			
 			Name1 = Name1.toLowerCase();
+			
+			Name1 = Name1.replace(" ", "_");
 
 			//look for depot
 			val = findDepot(Name1);
@@ -374,6 +383,8 @@ public class Interface {
 			}
 			
 			Name1 = Name1.toLowerCase();
+			
+			Name1 = Name1.replace(" ", "_");
 	
 			refD = findDepot(Name1);
 			
@@ -403,6 +414,8 @@ public class Interface {
 			
 			Name2 = Name2.toLowerCase();
 			
+			Name2 = Name2.replace(" ", "_");
+
 			refP = DepotArr[refD].findProduct(Name2);
 			//Look for product existence
 			if(refP == -1) {
@@ -507,6 +520,8 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			Name = Name.replace(" ", "_");
+			
 			//look for depot
 			val = findDepot(Name);
 			
@@ -577,6 +592,8 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			Name = Name.replace(" ", "_");
+
 			//List all matched search results in boolean array
 			for(refD = 0; refD < 4; refD++) {
 				
@@ -650,6 +667,8 @@ public class Interface {
 			
 			Name = Name.toLowerCase();
 			
+			Name = Name.replace(" ", "_");
+
 			refD = findDepot(Name);
 			
 			if(refD == -1) {
