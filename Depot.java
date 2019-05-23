@@ -14,11 +14,12 @@ public class Depot {
 	//Variable/Object Types of class Depot
 	private Product[] ProductArr;
 	private String Name;
+	private static final int MAX_P = 5;//Product array max limit
 	
 	//Constructor
 	public Depot() {
 		
-		ProductArr = new Product[5];
+		ProductArr = new Product[MAX_P];
 		
 		Name = "";
 		
@@ -163,7 +164,7 @@ public class Depot {
 
 	public int findProduct(String Name) {
 		
-		for(int count = 0; count < 5; count++) {
+		for(int count = 0; count < MAX_P; count++) {
 			if(ProductArr[count].readName().equals(Name)) {
 				return count;
 			}
@@ -183,7 +184,7 @@ public class Depot {
 	 */
 	public int productCount() {
 		int val = 0;
-		for(int count = 0; count < 5; count ++) {
+		for(int count = 0; count < MAX_P; count ++) {
 			if(!(ProductArr[count].readName().equals(""))) {
 				val++;
 			}
@@ -200,7 +201,7 @@ public class Depot {
 	
 	public int findFreeProduct() {
 		
-		for(int count = 0; count < 5; count++) {
+		for(int count = 0; count < MAX_P; count++) {
 			if(ProductArr[count].readName().equals("")) {
 				return count;
 			}

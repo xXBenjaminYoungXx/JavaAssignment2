@@ -13,21 +13,45 @@ import java.util.Scanner;
 * Email: BenjaminYoung7198@gmail.com  ryanmack@bigpond.com
 * Requirements: 
 * 	javax.swing.JOptionPane
-*	Depot.java
 *	java.io.PrintWriter
 *	java.io.FileNotFoundException
-*Scope of file will remain within respective file io methods
-*TODO: Spaces in products / depots should be illegal
-*TODO: Import from file, yay fun,(Update): Debugg
+*	java.io.File
+*	java.util.Scanner
+*	Depot.java
+*	
+* 
+* 
+* ______________________________
+* |****************************|
+* |* Method Information Below!*|
+* |____________________________|
+* 
+*TODO: Debug program
+*TODO: Add main method comments
+*TODO: Read over project to double check
+*TODO: Add functionality and fix grammar
 */
 //-----------------------------------------------------------------------------------------
 
-
+/*
+ * Class: Interface
+ * Interface Object parameters:
+ * 	-Depot array "DepotArr"
+ * 	-MAX_D final int.
+ * 	-MAX_P final int.
+ */
 public class Interface {
 	
 	//Variable/Object Types of class Interface
 	private Depot[] DepotArr;
-	
+	private static final int MAX_D = 4;//Depot array max limit
+	private static final int MAX_P = 5;//Product array max limit
+	/*
+	* Changing final variables will work for additional depots/products however, these additional products/depots wont be printed to GUI.
+	* I can accommodate for this by modifying String methods such as 'productSearchRes'.
+	* NOTE: Default should remain at MAX_D = 4
+	* 								 MAX_P = 5
+	*/
 	//------------------------------------//
 	public static void main(String[] args) {
 		Interface GUI = new Interface();
@@ -41,7 +65,7 @@ public class Interface {
 		boolean exit = true; //Used for menu loop
 		
 		//Initialize depot array
-		DepotArr = new Depot[4];
+		DepotArr = new Depot[MAX_D];
 		
 		//Initialize depot objects
 		for(int count = 0; count < DepotArr.length; count++) {
@@ -154,7 +178,7 @@ public class Interface {
 		
 		//Look to see if a empty depot object is available
 		if(freeDepotCount() == 0) {
-			JOptionPane.showMessageDialog(null, "4 depots already exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, MAX_D+" depots already exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		
@@ -202,7 +226,7 @@ public class Interface {
 		int val;
 		
 		//See if depot exists
-		if(freeDepotCount() == 4) {
+		if(freeDepotCount() == MAX_D) {
 			JOptionPane.showMessageDialog(null, "No depots exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
@@ -246,7 +270,9 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control for addProduct menu option
+	 */
 	public void addProduct() {
 		
 		//Declare variables
@@ -258,7 +284,7 @@ public class Interface {
 		int depotReference = -1;
 		
 		//See if depots exist
-		if(freeDepotCount() == 4) {
+		if(freeDepotCount() == MAX_D) {
 			JOptionPane.showMessageDialog(null, "No depots exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
@@ -287,7 +313,7 @@ public class Interface {
 			Name = Name.replace(" ", "_");
 
 			//Look for existing product
-			for(int refD = 0; refD < 4; refD++) {
+			for(int refD = 0; refD < MAX_D; refD++) {
 				
 				if(DepotArr[refD].findProduct(Name) != -1) {
 					
@@ -347,7 +373,9 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control for removeProduct menu option
+	 */
 	public void removeProduct() {
 		//Declare variables
 		String Name1;
@@ -362,7 +390,7 @@ public class Interface {
 		while(exit) {
 			
 			//Look look for existing depot
-			if(freeDepotCount() == 4) {
+			if(freeDepotCount() == MAX_D) {
 				JOptionPane.showMessageDialog(null, "No depots exist!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
@@ -424,6 +452,7 @@ public class Interface {
 			}
 			
 			//Request value to delete product
+			
 			Quant = JOptionPane.showInputDialog(null, "Enter quantity of product you wish to remove:\nCurrent quantity: "+DepotArr[refD].readQuantP(refP));
 			
 			val = isValid(Quant);
@@ -440,7 +469,13 @@ public class Interface {
 			
 			Quant = Quant.replace(" ", "");
 			
-			quant = Integer.parseInt(Quant);
+			//Because string changed to a different data type is from user input, a NumberFormatException can occur
+			try {
+				quant = Integer.parseInt(Quant);
+			}catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Error:\n"+e.toString()+"\nPlease enter valid input!","ERROR",JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
 			
 			if(quant > DepotArr[refD].readQuantP(refP)) {
 				JOptionPane.showMessageDialog(null, "You ented a value greater than the number of the product present!\nPlease enter valid value!");
@@ -464,21 +499,23 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control for listDepot menu option
+	 */
 	public void listDepot() {
 		int depot1P = DepotArr[0].productCount();
 		int depot2P = DepotArr[1].productCount();
 		int depot3P = DepotArr[2].productCount();
 		int depot4P = DepotArr[3].productCount();
 		
-		if(freeDepotCount() == 4) {
+		if(freeDepotCount() == MAX_D) {
 			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		
 		JOptionPane.showMessageDialog(null, "Existing Depots:\n"+depotListText(0, depot1P)+depotListText(1, depot2P)+depotListText(2, depot3P)+depotListText(3, depot4P), "Depot List", JOptionPane.INFORMATION_MESSAGE);
 	}
-	
+	//this small method is used to get String data for listDepot
 	public String depotListText(int refD, int Pnum) {
 		if(DepotArr[refD].readName().equals("")) {
 			return "";
@@ -489,7 +526,9 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control for listProduct menu Option
+	 */
 	public void listProduct() {
 		
 		String Name;
@@ -498,7 +537,7 @@ public class Interface {
 		
 		while(exit) {
 			//look if depots exist
-			if(freeDepotCount() == 4) {
+			if(freeDepotCount() == MAX_D) {
 				JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
@@ -534,7 +573,12 @@ public class Interface {
 			return;
 		}
 	}
-	
+	/**
+	 * 
+	 * @param refD, int Depot Array reference 
+	 * @param refP, int Product array reference
+	 * @return String, that contains info on depot refD, product refP
+	 */
 	public String printProductInfo(int refD, int refP) {
 		if(DepotArr[refD].readNameP(refP).equals("")) {
 			return "";
@@ -545,13 +589,15 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+/**
+ * Flow Control for lookForProduct menu option
+ */
 	public void lookForProduct() {
 		//Variables
-		boolean[][] list = new boolean[4][5];
+		boolean[][] list = new boolean[MAX_D][MAX_P];
 		
-		for(int count1 = 0; count1 < 4; count1++) {
-			for(int count2 = 0; count2 < 5; count2++) {
+		for(int count1 = 0; count1 < MAX_D; count1++) {
+			for(int count2 = 0; count2 < MAX_P; count2++) {
 				list[count1][count2] = false;
 			}
 		}
@@ -563,7 +609,7 @@ public class Interface {
 		int refP;
 		
 		//See if a depot exists
-		if(freeDepotCount() == 4) {
+		if(freeDepotCount() == MAX_D) {
 			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
@@ -595,9 +641,9 @@ public class Interface {
 			Name = Name.replace(" ", "_");
 
 			//List all matched search results in boolean array
-			for(refD = 0; refD < 4; refD++) {
+			for(refD = 0; refD < MAX_D; refD++) {
 				
-				for(refP = 0; refP < 5; refP++) {
+				for(refP = 0; refP < MAX_P; refP++) {
 					
 					if(DepotArr[refD].readNameP(refP).equals(Name)) {
 						
@@ -617,12 +663,16 @@ public class Interface {
 	}
 	
 //------------------------------------------------------------------	
-	
+	/**
+	 * 
+	 * @param list, boolean array containing information of which result came up true
+	 * @return Information on products that returned true on boolean array
+	 */
 	public String productSearchRes(boolean [][] list) {
 		String Final = "";
 		
-		for(int refD = 0; refD < 4; refD++) {
-			for(int refP = 0; refP < 5; refP++) {
+		for(int refD = 0; refD < MAX_D; refD++) {
+			for(int refP = 0; refP < MAX_P; refP++) {
 				if(list[refD][refP] == true) {
 					Final = Final.concat("Product "+DepotArr[refD].readNameP(refP)+" exists in depot "+DepotArr[refD].readName()+" with quantity "+DepotArr[refD].readQuantP(refP)+"\n");
 				}
@@ -637,14 +687,16 @@ public class Interface {
 	}
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow Control of valueOfDepot menu choice
+	 */
 	public void valueOfDepot() {
 		String Name;
 		boolean exit = true;
 		int val;
 		int refD;
 		
-		if(freeDepotCount() == 4) {
+		if(freeDepotCount() == MAX_D) {
 			JOptionPane.showMessageDialog(null, "No depots exist.", "list Depot", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
@@ -686,7 +738,9 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control of write to file menu option
+	 */
 	public void writeToFile() {
 		//variables/Objects
 		String FileName = "";
@@ -719,7 +773,7 @@ public class Interface {
 		//Development of String object to print line by line
 		//Note: Apparently \n does not work hence it needs to be solved line by line
 		
-		for(int refD = 0; refD < 4; refD++) {
+		for(int refD = 0; refD < MAX_D; refD++) {
 			
 			//If depot does not exist, skip this process
 			if(DepotArr[refD].readName().equals("")) {
@@ -727,11 +781,11 @@ public class Interface {
 			}
 			
 			//If depot exists it needs to be printed to file
-			for(int refP = 0; refP < 5; refP++) {
+			for(int refP = 0; refP < MAX_P; refP++) {
 				
 				if(DepotArr[refD].productCount() == 0) {//If no products exist in it it needs to be printed once
 					OutputStream.println(DepotArr[refD].readName()+"-Depot");
-					refP = 5;
+					refP = MAX_P;
 					continue;
 				}
 				
@@ -782,12 +836,15 @@ public class Interface {
 	
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+	/**
+	 * Flow control of readFromFile menu option
+	 */
 	public void readfromFile() {
-		//Varianles/Objects
+		//Variables/Objects
 		String FileName = "";
 		String Line;
 		Scanner InputStream;
+		int iteration = 1;
 		
 		int val = 0;
 		
@@ -823,16 +880,22 @@ public class Interface {
 		
 		//File is processed line by line
 		while(InputStream.hasNextLine()) {
+			iteration++;
 			//Get line to process
 			Line = InputStream.nextLine();
 			//put line in method processor
-			processLine(Line);
+			processLine(Line, iteration);
 		}
 		
 		InputStream.close();
 	}
 //------------------------------------------------------------------
-	public void processLine(String Line) {
+	/**
+	 * 
+	 * @param Line, String taken from single line of file
+	 * @param iteration, Used to track file data for error messages
+	 */
+	public void processLine(String Line, int iteration) {
 		String DepotName = "";
 		String ProductName = "";
 		double price = -1;
@@ -872,12 +935,12 @@ public class Interface {
 		}
 		
 		if(DepotName.replace(" ", "").equals("")) {
-			JOptionPane.showMessageDialog(null, "invalid depot name, skipping line","Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "invalid depot name, skipping line "+iteration,"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		//Now data is stored, we need to find out 'what to do'
 		//Firstly we need to see if 'DepotName' already exists
-		for(int refD = 0; refD < 4; refD++) {
+		for(int refD = 0; refD < MAX_D; refD++) {
 			
 			if(DepotArr[refD].readName().equals(DepotName)) {
 				depotAt = refD;
@@ -886,9 +949,9 @@ public class Interface {
 		
 		//Secondly we need to see if product exists in any depot only if product is listed
 		if(words.length == 5) {
-			for(int refD = 0; refD < 4; refD++){
+			for(int refD = 0; refD < MAX_D; refD++){
 				
-				for(int refP = 0; refP < 5; refP++) {
+				for(int refP = 0; refP < MAX_P; refP++) {
 					
 					if(DepotArr[refD].readNameP(refP).equals(ProductName)) {
 						atRefP = refP;
@@ -905,7 +968,7 @@ public class Interface {
 			depotAt = avalableDepot();
 			
 			if(depotAt == -1) {
-				JOptionPane.showMessageDialog(null, "No Depot spots avaliable, skipping line ","Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "No Depot spots avaliable, skipping line "+iteration,"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -928,6 +991,15 @@ public class Interface {
 		}
 	}
 //------------------------------------------------------------------
+	/**
+	 * 
+	 * @param refD, The array address of Depot
+	 * @param refP, The array address of Product
+	 * @param refd, The array address of Depot we want to put product in
+	 * @param quant, The quantity of the product
+	 * @return NOTHING
+	 * This method has been separated from LineProccess as to help structure the code.
+	 */
 	public void FileExistingProduct(int refD/*address of product*/, int refP/*address of product*/, int refd/*Depot we add to*/, int quant) {
 		String Name = DepotArr[refD].readNameP(refP);//existing product name
 		double price = DepotArr[refD].readPriceP(refP);
@@ -935,7 +1007,7 @@ public class Interface {
 		int freeSpace = -1;
 		
 		//We need to see if product exists in current depot
-		for(int count = 0; count < 5; count++) {
+		for(int count = 0; count < MAX_P; count++) {
 			if(DepotArr[refd].readNameP(count).equals(Name)) {
 				//We just need to add quant
 				DepotArr[refd].writeQuantP(DepotArr[refd].readQuantP(count) + quant, count);
@@ -960,6 +1032,16 @@ public class Interface {
 	}
 
 //------------------------------------------------------------------
+	/**
+	 * 
+	 * @param refd, int: Depot array reference of depot we want to add product to
+	 * @param weight, double: weight value of product object
+	 * @param price, double: price variable of product object
+	 * @param quant, int: quant variable of product object
+	 * @param Name, String: Name variable of product object
+	 * @return NOTHING
+	 * This method has been separated from LineProccess as to help structure the code.
+	 */
 	public void FileNewProduct(int refd/*Depot we add to*/, double weight, double price, int quant, String Name) {
 		int freeSpot = -1;
 		//Find free product spot
@@ -1044,7 +1126,7 @@ public class Interface {
 	 * @returns true, if it exists, false if not
 	 */
 	public boolean doesDepotExist(String Name) {
-		for(int count = 0; count < 4; count++) {
+		for(int count = 0; count < MAX_D; count++) {
 			if(DepotArr[count].readName().equals(Name)) {
 				return true;
 			}
@@ -1060,7 +1142,7 @@ public class Interface {
 	 */
 	public int findDepot(String Name) {
 		
-		for(int count = 0; count < 4; count++) {
+		for(int count = 0; count < MAX_D; count++) {
 			if(DepotArr[count].readName().equals(Name)) {
 				return count;
 			}
@@ -1101,7 +1183,13 @@ public class Interface {
 			
 			Input = Input.replace(" ", "");
 			
-			quant = Integer.parseInt(Input);
+			//Because string changed to a different data type is from user input, a NumberFormatException can occur
+			try {
+				quant = Integer.parseInt(Input);
+			}catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Error:\n"+e.toString()+"\nPlease enter valid input!","ERROR",JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
 			
 			if(quant<=0) {
 				JOptionPane.showMessageDialog(null, "No zeros or negatives permitted");
@@ -1124,7 +1212,13 @@ public class Interface {
 			
 			Input = Input.replace(" ", "");
 			
-			weight = Double.parseDouble(Input);
+			//Because string changed to a different data type is from user input, a NumberFormatException can occur
+			try {
+				weight = Double.parseDouble(Input);
+			}catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Error:\n"+e.toString()+"\nPlease enter valid input!","ERROR",JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
 			
 			if(weight <= 0) {
 				JOptionPane.showMessageDialog(null, "No zeros or negatives permitted");
@@ -1147,7 +1241,13 @@ public class Interface {
 			
 			Input = Input.replace(" ", "");
 			
-			price = Double.parseDouble(Input);
+			//Because string changed to a different data type is from user input, a NumberFormatException can occur
+			try {	
+				price = Double.parseDouble(Input);
+			}catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Error:\n"+e.toString()+"\nPlease enter valid input!","ERROR",JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
 			
 			if(price <= 0) {
 				JOptionPane.showMessageDialog(null, "No zeros or negatives permitted");
@@ -1205,7 +1305,13 @@ public class Interface {
 			
 			Input = Input.replace(" ", "");
 			
-			quant = Integer.parseInt(Input);
+			//Because string changed to a different data type is from user input, a NumberFormatException can occur
+			try {
+				quant = Integer.parseInt(Input);
+			}catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Error:\n"+e.toString()+"\nPlease enter valid input!","ERROR",JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
 			
 			//get data from first depot
 			price = DepotArr[DepotRef].readPriceP(ProductRef);
@@ -1217,7 +1323,7 @@ public class Interface {
 			//Find which product to add to
 			
 			//see if it already exists
-			for(count = 0; count < 5; count++) {
+			for(count = 0; count < MAX_P; count++) {
 				
 				if(DepotArr[depotRef].readNameP(count).equals(DepotArr[DepotRef].readNameP(ProductRef))) { // It already exists in depot
 					
@@ -1266,3 +1372,19 @@ public class Interface {
 		return "- "+ DepotArr[refD].readNameP(refP) +"\n";
 	}
 }
+/*				 *
+ *	     	    **
+ *        /\   ***
+ *		 /  \ |  |
+ *      /    \|  |
+ * 	   /	  \  |
+ *    /		   \ |
+ *   /			\|
+ *  /			 \
+ * /______________\
+ * |  _        _  |
+ * | |_|	  |	| |
+ * |__________|_|_|
+ * 
+ * 
+*/
