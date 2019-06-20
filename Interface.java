@@ -95,8 +95,6 @@ import java.util.Scanner;
 * 
 * 		-printDepotList(): returns string of depot information if they exist
 *TODO: Debug program
-*TODO: Add main method comments
-*TODO: Add functionality and fix grammar
 */
 //-----------------------------------------------------------------------------------------
 
@@ -1439,19 +1437,19 @@ public class Interface {
 		return "- "+ DepotArr[refD].readNameP(refP) +"\n";
 	}
 }
-/*				 *
- *	     	    **
+/*	               *
+ *	             **
  *        /\   ***
- *		 /  \ |  |
+ *	     /  \ |  |
  *      /    \|  |
- * 	   /	  \  |
- *    /		   \ |
- *   /			\|
- *  /			 \
+ * 	   /      \  |
+ *    /	       \ |
+ *   /	        \|
+ *  /	         \
  * /______________\
  * |  _        _  |
- * | |_|	  |	| |
+ * | |_|	  |.| |
  * |__________|_|_|
  * You found the house!
- * It only seems to be a house in eclipse...
+ * 
 */
